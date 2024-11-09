@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TaleVortex</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>TaleVortex</h1>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    {% if current_user.is_authenticated %}
+        <p>Welcome, {{ current_user.email }}!</p>
+        <a href="{{ url_for('logout') }}">Logout</a>
+        <h2>Your Stories</h2>
+        <ul>
+        {% for story in stories %}
+            <li>
+                {{ story.name }}
+                {% if selected_story and story.id == selected_story.id %}
+                    (Selected)
+                {% else %}
+                    <a href="{{ url_for('select_story', story_id=story.id) }}">Select</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+        <a href="{{ url_for('create_story') }}">Create New Story</a>
+        {% if not selected_story==None %}
+            <h2>Current Story: {{ selected_story.name }}</h2>
+
+            <!-- Display Undefined Names -->
+            {% if selected_story.undefined_names %}
+                <h3>Undefined Names</h3>
+                <ul>
+                    {% for name in selected_story.undefined_names %}
+                        <li>{{ name }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No undefined names.</p>
+            {% endif %}
+
+            <h3>Add a Unit</h3>
+            <ul>
+            {% for unit_type in unit_classes_dict.keys() %}
+                <li><a href="{{ url_for('add_unit', unit_type=unit_type, story_id=selected_story.id) }}">{{ unit_type }}</a></li>
+            {% endfor %}
+            </ul>
+            <h3>Existing Units</h3>
+            {% if grouped_units %}
+                {% for unit_type, units in grouped_units.items() %}
+                    <h4>{{ unit_type }}</h4>
+                    {% for unit in units %}
+                        <details>
+                            <summary><strong>{{ unit.features.get('name', '') }}</strong></summary>
+                            <!-- Edit Link -->
+                            <a href="{{ url_for('edit_unit', story_id=selected_story.id, unit_name=unit.name) }}">Edit</a>
+                            {% for feature_name, value in unit.features.items() %}
+                                <br><em>{{ feature_name }}</em>:
+                                {% if value is iterable and value is not string %}
+                                    {% for item in value %}
+                                        {% if item in selected_story.undefined_names %}
+                                            <span class="undefined-name">{{ item }}</span>
+                                        {% else %}
+                                            {{ item }}
+                                        {% endif %}
+                                        {% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {{ value }}
+                                {% endif %}
+                            {% endfor %}
+                        </details>
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+                <p>No units available.</p>
+            {% endif %}
+            <a href="{{ url_for('download_story', story_id=selected_story.id) }}">Download Story as PDF</a><br>
+            <a href="{{ url_for('download_story_json', story_id=selected_story.id) }}">Download Story as JSON</a><br>
+            <a href="{{ url_for('create_board_game', story_id=selected_story.id) }}">Create Board Adventure Game</a>
+            <h3>Download Board Game Files</h3>
+            <ul>
+                <li><a href="{{ url_for('download_npc_pdf', story_id=selected_story.id) }}">Download NPCs PDF</a></li>
+                <li><a href="{{ url_for('download_location_pdf', story_id=selected_story.id) }}">Download Locations PDF</a></li>
+                <li><a href="{{ url_for('download_additional_text_pdf', story_id=selected_story.id) }}">Download Additional Texts PDF</a></li>
+            </ul>
+        {% else %}
+            <p>Please select a story to begin.</p>
+        {% endif %}
+    {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <p>Please log in to create and view stories.</p>
+    {% endif %}
+</body>
+</html>

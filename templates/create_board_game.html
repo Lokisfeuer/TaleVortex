@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Board Adventure Game</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Create Board Adventure Game for "{{ story.name }}"</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="setting_and_style">Setting and Style:</label><br>
+            <textarea name="setting_and_style" id="setting_and_style" rows="4" cols="100">{{ prefilled_data.setting_and_style }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="challenge_or_goal">Challenge or Goal:</label><br>
+            <textarea name="challenge_or_goal" id="challenge_or_goal" rows="4" cols="100">{{ prefilled_data.challenge_or_goal }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="core_secrets">Core Secrets:</label><br>
+            <textarea name="core_secrets" id="core_secrets" rows="4" cols="100">{{ prefilled_data.core_secrets }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="start_description">Start:</label><br>
+            <textarea name="start_description" id="start_description" rows="4" cols="100">{{ prefilled_data.start_description }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="chronology">Chronology:</label><br>
+            <textarea name="chronology" id="chronology" rows="4" cols="100">{{ prefilled_data.chronology }}</textarea>
+        </div>
+
+        <!-- For each Location -->
+        {% for location in prefilled_data.locations %}
+            <h2>Location: {{ location.name }}</h2>
+            <div class="form-group">
+                <label>Description:</label><br>
+                <textarea name="location_{{ loop.index0 }}_description" rows="4" cols="100">{{ location.description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Events and Scenes:</label><br>
+                <textarea name="location_{{ loop.index0 }}_events" rows="4" cols="100">{{ location.events }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>NPCs:</label><br>
+                <textarea name="location_{{ loop.index0 }}_npcs" rows="4" cols="100">{{ location.npcs }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Investigation Findings:</label><br>
+                <textarea name="location_{{ loop.index0 }}_investigation" rows="4" cols="100">{{ location.investigation }}</textarea>
+            </div>
+            <div class="form-group">
+                {% set location_image_key = 'location_' ~ loop.index0 ~ '_image' %}
+                <label>Image of the Location:</label><br>
+                {% if story.board_game_data.images.get(location_image_key) %}
+                    <!-- Display user-uploaded image -->
+                    <img src="{{ url_for('static', filename='uploads/' ~ story.board_game_data.images.get(location_image_key)) }}" alt="{{ location.name }}" style="max-width: 200px; max-height: 200px;"><br>
+                {% elif location.image_filename %}
+                    <!-- Display default image -->
+                    <img src="{{ url_for('static', filename='uploads/' ~ location.image_filename) }}" alt="{{ location.name }}" style="max-width: 200px; max-height: 200px;"><br>
+                {% endif %}
+                <input type="file" name="{{ location_image_key }}">
+                <!-- Hidden input to keep track of existing image -->
+                {% if story.board_game_data.images.get(location_image_key) %}
+                    <input type="hidden" name="{{ location_image_key }}_existing" value="{{ story.board_game_data.images.get(location_image_key) }}">
+                {% elif location.image_filename %}
+                    <input type="hidden" name="{{ location_image_key }}_existing" value="{{ location.image_filename }}">
+                {% endif %}
+            </div>
+        {% endfor %}
+
+
+        <!-- For each NPC -->
+        {% for npc in prefilled_data.npcs %}
+            <h2>NPC: {{ npc.name }}</h2>
+            <div class="form-group">
+                <label>Description:</label><br>
+                <textarea name="npc_{{ loop.index0 }}_description" rows="4" cols="100">{{ npc.description }}</textarea>
+            </div>
+            <div class="form-group">
+                {% set npc_image_key = 'npc_' ~ loop.index0 ~ '_image' %}
+                <label>Image of the NPC:</label><br>
+                {% if story.board_game_data.images.get(npc_image_key) %}
+                    <!-- Display user-uploaded image -->
+                    <img src="{{ url_for('static', filename='uploads/' ~ story.board_game_data.images.get(npc_image_key)) }}" alt="{{ npc.name }}" style="max-width: 200px; max-height: 200px;"><br>
+                {% elif npc.image_filename %}
+                    <!-- Display default image -->
+                    <img src="{{ url_for('static', filename='uploads/' ~ npc.image_filename) }}" alt="{{ npc.name }}" style="max-width: 200px; max-height: 200px;"><br>
+                {% endif %}
+                <input type="file" name="{{ npc_image_key }}">
+                <!-- Hidden input to keep track of existing image -->
+                {% if story.board_game_data.images.get(npc_image_key) %}
+                    <input type="hidden" name="{{ npc_image_key }}_existing" value="{{ story.board_game_data.images.get(npc_image_key) }}">
+                {% elif npc.image_filename %}
+                    <input type="hidden" name="{{ npc_image_key }}_existing" value="{{ npc.image_filename }}">
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit">Save</button>
+    </form>
+
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!-- create_story.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create New Story</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Create New Story</h1>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <div class="form-group">
+            <label for="story_name">Story Name:</label><br>
+            <input type="text" name="story_name" id="story_name" required>
+        </div>
+        <div class="form-group">
+            <label for="setting_and_style">What is the setting and style you would like to write this story in?</label><br>
+            <textarea name="setting_and_style" id="setting_and_style" rows="4" cols="50" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="main_challenge">What is the main Challenge, Task or Goal the Player Characters within the story have?</label><br>
+            <textarea name="main_challenge" id="main_challenge" rows="4" cols="50" required></textarea>
+        </div>
+        <button type="submit">Create Story</button>
+    </form>
+
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>

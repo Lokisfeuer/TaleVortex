@@ -1,0 +1,91 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.unit {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"], select {
+    width: 300px;
+    padding: 5px;
+}
+
+input[type="range"] {
+    width: 300px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+pre {
+    background-color: #f8f8f8;
+    padding: 15px;
+    border: 1px solid #ccc;
+}
+
+.error-messages {
+    color: #D8000C;
+    background-color: #FFBABA;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.error-messages ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.flash-messages {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+.undefined-name {
+    color: red;
+    font-style: italic;
+}
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it covers other content */
+}

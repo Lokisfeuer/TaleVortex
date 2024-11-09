@@ -1,0 +1,61 @@
+<!-- story.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ story.name }}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Story: {{ story.name }}</h1>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    <h2>Setting and Style</h2>
+    <p>{{ story.setting_and_style }}</p>
+
+    <h2>Main Challenge, Task, or Goal</h2>
+    <p>{{ story.main_challenge }}</p>
+
+    <h2>Add a Unit</h2>
+    <ul>
+    {% for unit_type in unit_types %}
+        <li><a href="{{ url_for('add_unit', story_id=story.id, unit_type=unit_type) }}">{{ unit_type }}</a></li>
+    {% endfor %}
+    </ul>
+
+    <h2>Undefined Names</h2>
+    {% if story.undefined_names %}
+        <ul>
+        {% for name in story.undefined_names %}
+            <li>{{ name }}</li>
+        {% endfor %}
+        </ul>
+        <p>These names are referenced in your story but no units have been created for them yet.</p>
+    {% else %}
+        <p>All unit references are resolved.</p>
+    {% endif %}
+
+    <h2>Existing Units</h2>
+    {% for unit in story.units %}
+        <div class="unit">
+            <strong>{{ unit.unit_type }} {{ unit.features.get('name', '') }} (ID: {{ unit.id }})</strong><br>
+            {% for feature_name, value in unit.features.items() %}
+                <em>{{ feature_name }}</em>: {{ value }}<br>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <a href="{{ url_for('download_story', story_id=story.id) }}">Download Story</a><br>
+    <a href="{{ url_for('download_story_json', story_id=story.id) }}">Download Story as JSON</a><br>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>
